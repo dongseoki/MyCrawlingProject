@@ -22,7 +22,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="PythonApplicationCrawling.py" />
-    <Compile Include="python_fighthgin.py">
+    <Compile Include="PythonApplicationCrawling_ver2.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

@@ -492,14 +492,14 @@ def isISBNCorrect(ISBN, bsObject, sid):
             pass
     except AttributeError:
         # 전자 자료 같은 경우. ISBN이 없다.
-        return false
+        return False
 
 # In[243]:
 
 
 ISBN = '9788988474839'
 koreaTitle = '데이터 분석 전문가 가이드'
-sid = SM_CODE
+sid = KW_CODE
 title = parse.quote(koreaTitle)
 resultfinalfinal = findLoanStatus(ISBN, title, sid)
 
