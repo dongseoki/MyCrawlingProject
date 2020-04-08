@@ -431,7 +431,6 @@ def findLoanStatus(ISBN, title, sid, searchFlag):
 
 
 
-
 #ISBN = '9788988474839'
 #koreaTitle = '데이터 분석 전문가 가이드'
 #sid = KW_CODE
