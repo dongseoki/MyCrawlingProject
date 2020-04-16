@@ -11,24 +11,32 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Member;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     EditText editText;
     TextView textView;
     Handler handler = new Handler();
+    ArrayList<LibraryLS> libraryLoanList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         textView =(TextView) findViewById(R.id.textView);
+        libraryLoanList = new ArrayList<LibraryLS>();
+
     }
     public void ClickButton1(View v){
         Toast.makeText(getApplicationContext(),"버튼을 눌렀습니다.", Toast.LENGTH_LONG).show();
@@ -46,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
                // String urlStr = "https://us-central1-my-crawling-project.cloudfunctions.net/function-1";
                // String urlStr = "https://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=430156241533f1d058c603178cc3ca0e&targetDt=20120101";
                 //+ URLEncoder.encode(user, "UTF-8");
-                String urlStr = "https://us-central1-my-crawling-project.cloudfunctions.net/function-crawling/?isbn=9791186757093&title=asdf&sid=7";
+                //String urlStr = "https://us-central1-my-crawling-project.cloudfunctions.net/function-crawling/?isbn=9791186757093&title=asdf&sid=7";
+                String urlStr = "https://us-central1-my-crawling-project.cloudfunctions.net/function-crawling?isbn=9788968481093&title=%28%EB%B9%84%EC%A6%88%EB%8B%88%EC%8A%A4%EB%A5%BC%20%EC%9C%84%ED%95%9C%29%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B3%BC%ED%95%99&searchFlag=2";
                 URL url = new URL(urlStr);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 if(conn !=null){
@@ -68,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
                         result += line;
                         //println(line);
                     }
+                    Log.d("크롤링 로그", "결과");
                     processResponse(result);
                     reader.close();
                     conn.disconnect();
@@ -89,30 +99,29 @@ public class MainActivity extends AppCompatActivity {
 
     public void processResponse(String response){
         Gson gson = new Gson();
-        LibraryLS libraryLoanStatus = gson.fromJson(response, LibraryLS.class);
-        if(libraryLoanStatus != null){
-            int countLoanStatus = libraryLoanStatus.loanStatusList.size();
+        //LibraryLS libraryLoanStatus = gson.fromJson(response, LibraryLS.class);
+        //new TypeToken<List<Member>>(){}.getType()
+        //출처: https://jekalmin.tistory.com/entry/Gson을-이용한-json을-객체에-담기 [jekalmin의 블로그]
+        libraryLoanList = gson.fromJson(response, new TypeToken<ArrayList<LibraryLS>>(){}.getType());
+        if(libraryLoanList != null){
+            int countLoanStatus = libraryLoanList.size();
 
             println("size : " + countLoanStatus);
-            Log.d("크롤링 로그", ""+countLoanStatus);
+            Log.d("크롤링 로그", "도서관 개수"+countLoanStatus);
 
-            for(int i=0;i <libraryLoanStatus.loanStatusList.size();i++){
-                println( libraryLoanStatus.loanStatusList.get(i).title);
-                println( libraryLoanStatus.loanStatusList.get(i).RN);
-                println( libraryLoanStatus.loanStatusList.get(i).CN);
-                println( libraryLoanStatus.loanStatusList.get(i).POS);
-                println(""+ libraryLoanStatus.loanStatusList.get(i).STATE);
-                println( libraryLoanStatus.loanStatusList.get(i).RDD);
-                println( ""+libraryLoanStatus.loanStatusList.get(i).BN);
-                println( ""+libraryLoanStatus.loanStatusList.get(i).errorMessage);
-                Log.d("크롤링 로그", libraryLoanStatus.loanStatusList.get(i).title);
-                Log.d("크롤링 로그", libraryLoanStatus.loanStatusList.get(i).RN);
-                Log.d("크롤링 로그", libraryLoanStatus.loanStatusList.get(i).CN);
-                Log.d("크롤링 로그", libraryLoanStatus.loanStatusList.get(i).POS);
-                Log.d("크롤링 로그",""+ libraryLoanStatus.loanStatusList.get(i).STATE);
-                Log.d("크롤링 로그", libraryLoanStatus.loanStatusList.get(i).RDD);
-                Log.d("크롤링 로그", ""+libraryLoanStatus.loanStatusList.get(i).BN);
-                Log.d("크롤링 로그", ""+libraryLoanStatus.loanStatusList.get(i).errorMessage);
+            for(int i=0;i <countLoanStatus;i++){
+
+                Log.d("크롤링 로그",""+i + "번 도서관 책 개수 : "+ libraryLoanList.get(i).loanStatusList.size());
+                for (int j=0; j<libraryLoanList.get(i).loanStatusList.size();j++){
+                    Log.d("크롤링 로그", libraryLoanList.get(i).loanStatusList.get(j).RN);
+                    Log.d("크롤링 로그", libraryLoanList.get(i).loanStatusList.get(j).CN);
+                    Log.d("크롤링 로그", libraryLoanList.get(i).loanStatusList.get(j).POS);
+                    Log.d("크롤링 로그",""+ libraryLoanList.get(i).loanStatusList.get(j).STATE);
+                    Log.d("크롤링 로그", libraryLoanList.get(i).loanStatusList.get(j).RDD);
+                    Log.d("크롤링 로그", ""+libraryLoanList.get(i).loanStatusList.get(j).BN);
+                    Log.d("크롤링 로그", ""+libraryLoanList.get(i).loanStatusList.get(j).errorMessage);
+                }
+
             }
         }
     }
