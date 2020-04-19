@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Member;
@@ -23,11 +24,16 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.OkHttpClient;
+
 public class MainActivity extends AppCompatActivity {
     EditText editText;
     TextView textView;
     Handler handler = new Handler();
     ArrayList<LibraryLS> libraryLoanList;
+    OkHttpClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         textView =(TextView) findViewById(R.id.textView);
         libraryLoanList = new ArrayList<LibraryLS>();
+        client = new OkHttpClient();
 
     }
     public void ClickButton1(View v){
@@ -44,45 +51,64 @@ public class MainActivity extends AppCompatActivity {
         RequestThread thread = new RequestThread();
         thread.start();
         //processResponse(longstr);
+
+
     }
+    String run(String url) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        Response response = client.newCall(request).execute();
+        return response.body().string();
+    }
+
+
     class RequestThread extends  Thread{
         public void run(){
 
             try {
-                //'https://us-central1-my-crawling-project.cloudfunctions.net/function-1');
-                //String urlStr = "http://m.naver.com";
-               // String urlStr = "https://us-central1-my-crawling-project.cloudfunctions.net/function-1";
-               // String urlStr = "https://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=430156241533f1d058c603178cc3ca0e&targetDt=20120101";
-                //+ URLEncoder.encode(user, "UTF-8");
-                //String urlStr = "https://us-central1-my-crawling-project.cloudfunctions.net/function-crawling/?isbn=9791186757093&title=asdf&sid=7";
-                String urlStr = "https://us-central1-my-crawling-project.cloudfunctions.net/function-crawling?isbn=9788968481093&title=%28%EB%B9%84%EC%A6%88%EB%8B%88%EC%8A%A4%EB%A5%BC%20%EC%9C%84%ED%95%9C%29%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B3%BC%ED%95%99&searchFlag=2";
-                URL url = new URL(urlStr);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                if(conn !=null){
-                    conn.setConnectTimeout(10000);
-                    conn.setRequestMethod("GET");
-                    conn.setDoInput(true);
-                    conn.setDoOutput(true);
+                //String urlStr = "https://us-central1-my-crawling-project.cloudfunctions.net/function-crawling?isbn=9788968481093&title=%28%EB%B9%84%EC%A6%88%EB%8B%88%EC%8A%A4%EB%A5%BC%20%EC%9C%84%ED%95%9C%29%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EA%B3%BC%ED%95%99&searchFlag=2";
+                String urlStr = "https://sddh-crawler-di4on54tsa-uc.a.run.app/?isbn=9788988474839&title=%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EB%B6%84%EC%84%9D%20%EC%A0%84%EB%AC%B8%EA%B0%80%20%EA%B0%80%EC%9D%B4%EB%93%9C&searchFlag=1";
 
-                    //int resCode = conn.getResponseCode();
 
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    String line = null;
-                    String result = "";
-                    while(true){
-                        line = reader.readLine();
-                        if(line == null){
-                            break;
-                        }
-                        result += line;
-                        //println(line);
-                    }
-                    Log.d("크롤링 로그", "결과");
-                    processResponse(result);
-                    reader.close();
-                    conn.disconnect();
-                    //Log.d("크롤링 로그", line);
-                }
+                Request request = new Request.Builder()
+                        .url(urlStr)
+                        .build();
+
+                Response response = client.newCall(request).execute();
+                String result = response.body().string();
+                Log.d("크롤링", "run: " + result);
+                processResponse(result);
+
+
+//                URL url = new URL(urlStr);
+//                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//                if(conn !=null){
+//                    conn.setConnectTimeout(10000);
+//                    conn.setRequestMethod("GET");
+//                    conn.setDoInput(true);
+//                    conn.setDoOutput(true);
+//
+//                    //int resCode = conn.getResponseCode();
+//
+//                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//                    String line = null;
+//                    String result = "";
+//                    while(true){
+//                        line = reader.readLine();
+//                        if(line == null){
+//                            break;
+//                        }
+//                        result += line;
+//                        //println(line);
+//                    }
+//                    Log.d("크롤링 로그", "결과");
+//                    processResponse(result);
+//                    reader.close();
+//                    conn.disconnect();
+//                    //Log.d("크롤링 로그", line);
+//                }
 
                 Log.d("크롤링 로그", "성공");
 
