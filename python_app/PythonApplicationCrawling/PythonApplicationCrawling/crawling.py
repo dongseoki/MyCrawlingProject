@@ -1,122 +1,20 @@
-
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[153]:
-
-
 from urllib.request import urlopen
+from urllib import parse
+from selenium import webdriver
 from bs4 import BeautifulSoup
+
+from flask import Flask
+from flask import request
+from flask import jsonify
+
+import time
+import os
+import json
 import re
 import sys, traceback
-import json
-from urllib import parse
+import threading
 
-
-# In[3]:
-
-# entity 들.
-
-KW_CODE =0
-KM_CODE =1
-DJ_CODE=2
-DS_CODE=3
-DD_CODE=4
-MJ_CODE=5
-SY_CODE=6
-SM_CODE=7
-SK_CODE=8
-SW_CODE=9
-SS_CODE=10
-HS_CODE=11
-
-
-# In[4]:
-
-
-base_start_url_list = ['http://kupis.kw.ac.kr/',
-'http://lib.kookmin.ac.kr/',
-'http://library.daejin.ac.kr/',
-'http://discover.duksung.ac.kr/',
-'http://library.dongduk.ac.kr/',
-'http://lib.mju.ac.kr/',
-'http://lib.syu.ac.kr/',
-'https://lib.smu.ac.kr/',
-'http://library.skuniv.ac.kr/',
-'http://lib.swu.ac.kr/',
-'http://lib.sungshin.ac.kr/',
-'http://hsel.hansung.ac.kr/']
-
-base_middle_url_list = ['search/caz/result?st=KWRD&commandType=advanced&si=1&q=',
-'#/total-search?keyword=',
-'',
-'',
-'',
-'',
-'',
-'Search/?q=',
-'',
-'',
-'',
-'']
-
-
-
-
-
-base_end_url_list = ['&b0=and&weight0=&si=2&q=&b1=and&weight1=&si=3&q=&weight2=&inc=TOTAL&_inc=on&_inc=on&_inc=on&_inc=on&_inc=on&_inc=on&lmt0=TOTAL&lmtsn=000000000003&lmtst=OR&rf=&rt=&range=000000000021&cpp=10&msc=100',
-'',
-'',
-'',
-'',
-'',
-'',
-'',
-'',
-'',
-'',
-''
-]
-
-
-
-class LibraryLS:
-    def __init__(self, sid):
-        self.sid = sid
-        self.loanStatusList = []
-        self.errorMessage= ''
-    
-
-
-# In[8]:
-
-
-class LoanStatus:
-    def __init__(self, title = '', RN = '', CN = '', POS = '', STATE = -1, RDD = '', BN = 0, errorMessage = ''):
-        self.title = title
-        self.RN= RN
-        self.CN= CN
-        self.POS= POS
-        self.STATE= STATE
-        self.RDD = RDD#'2222-12-31'
-        self.BN = BN
-        self.errorMessage = errorMessage
-'''#STATE : 도서 상태,
-#-1  에러
-#1 대출가능
-#0 대출중
-#2 지정도서
-# 대출불가 아직 생각 안함.
-#RN : 등록번호
-#CN : 청구기호
-#POS : 위치
-이런것들'''
-
-
-
-stateDict = {'대출중': 0, '이용가능':1,'대출가능':1, '지정도서':2}
-
-
+from library import *
 
 def findSubStringByRegEx(text, sid, subStringType):
     regex = re.compile(regexDictList[sid][subStringType])
@@ -367,17 +265,6 @@ def visitLink(ISBN, sid, title, bookLink):
     finally:
         return loanStatusList
 
-
-# 2단계 함수들
-#아직 상명대, 광운대만 함. 
-def makeSearchUrl(ISBN, title, sid, flag):
-    if flag ==1:
-        searchUrl = base_start_url_list[sid]+base_middle_url_list[sid] + ISBN+ base_end_url_list[sid]
-    else :
-        # flag 2.
-        searchUrl = base_start_url_list[sid]+base_middle_url_list[sid] + title+ base_end_url_list[sid]
-    return searchUrl
-
 def crawling(ISBN, title, sid, searchUrl):
     libraryLoanStatus = LibraryLS(sid)
     try:
@@ -401,40 +288,3 @@ def crawling(ISBN, title, sid, searchUrl):
         #libraryLoanStatus.errorMessage = 에러 traceback 에러메세지를 담는다.
     finally:
         return libraryLoanStatus
-
-
-
-def makeJsonDict(result):
-    # result 의 타입은 LibraryLS
-    jsonDict = {}
-    jsonDict['sid'] = result.sid
-    jsonDict['loanStatusList'] = []
-    for item in result.loanStatusList:
-        jsonDict['loanStatusList'].append(vars(item))
-    jsonDict['errorMessage']=result.errorMessage
-    return jsonDict
-
-
-# 1단계 함수
-
-def findLoanStatus(ISBN, title, sid, searchFlag):
-    if sid != SM_CODE and sid != KW_CODE:
-        result = LibraryLS(sid)
-        result.errorMessage = 'Not developed...'
-    else : 
-        searchUrl = makeSearchUrl(ISBN, title, sid, searchFlag)
-        result = crawling(ISBN, title, sid, searchUrl)
-    # json string 으로 만들기.
-    jsonDict = makeJsonDict(result)
-    return json.dumps(jsonDict)
-    
-
-
-
-#ISBN = '9788988474839'
-#koreaTitle = '데이터 분석 전문가 가이드'
-#sid = KW_CODE
-#title = parse.quote(koreaTitle)
-#searchFlag = 2
-#resultfinalfinal = findLoanStatus(ISBN, title, sid,searchFlag)
-#resultfinalfinal

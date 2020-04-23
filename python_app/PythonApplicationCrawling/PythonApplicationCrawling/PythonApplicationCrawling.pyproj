@@ -22,7 +22,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="PythonApplicationCrawling_ver2.py">
+    <Compile Include="crawling.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="findLoanStatus.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="library.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
