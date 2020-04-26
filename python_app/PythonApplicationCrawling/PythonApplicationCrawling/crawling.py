@@ -1,6 +1,11 @@
 from urllib.request import urlopen
 from urllib import parse
 from selenium import webdriver
+
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 from bs4 import BeautifulSoup
 
 from flask import Flask
@@ -27,6 +32,7 @@ def findSubStringByRegEx(text, sid, subStringType):
     subString = matchObj.group(1)
     return subString
     
+
     
 # 6단계 함수들
 
@@ -256,7 +262,10 @@ def makeContent( sid, bookResult = None, browser=None):
         linkXpath = '/html/body/div[1]/div[3]/div[2]/div[2]/div[2]/div[3]/div[1]/div[1]/div[2]/div[4]/div/div[3]/ul/li[1]/a[1]'
 
         try:
-            linkElement = browser.find_element_by_xpath(linkXpath)
+            linkElement = WebDriverWait(browser, 120).until(
+        EC.presence_of_element_located((By.XPATH, linkXpath))
+    )
+            #linkElement = browser.find_element_by_xpath(linkXpath)
             # 오류가능성.
         except :
             #print('예외가 발생! 찾는 책이 없음')
@@ -295,10 +304,13 @@ def visitLink(ISBN, sid, title, bookLink,linkElement = None, browser = None):
         #1. 접속.
         if sid == KM_CODE:
             linkElement.click()
-            time.sleep(4)
+            #time.sleep(4)
             ISBNLinkElementXpath = '//*[@id="btn-biblio-more-open"]'
-            ISBNLinkElement = browser.find_element_by_xpath(ISBNLinkElementXpath)
-            ISBNLinkElement.click()
+            linkElement = WebDriverWait(browser, 120).until(
+        EC.presence_of_element_located((By.XPATH, ISBNLinkElementXpath))
+    )
+            #ISBNLinkElement = browser.find_element_by_xpath(ISBNLinkElementXpath)
+            linkElement.click()
             time.sleep(4)
             html = browser.page_source
 
@@ -356,6 +368,7 @@ def crawling(ISBN, title, sid, searchUrl):
 
         if sid == KM_CODE : 
             libraryLoanStatus.loanStatusList += visitLink(ISBN, sid, title, None,linkElement, browser)
+            browser.quit()
         elif sid == KW_CODE or sid == SM_CODE :  
             for item in bookLinklist:
                 libraryLoanStatus.loanStatusList += visitLink(ISBN, sid, item[0], item[1])

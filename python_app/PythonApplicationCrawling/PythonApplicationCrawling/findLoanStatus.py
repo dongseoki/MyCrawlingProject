@@ -95,6 +95,11 @@ isbn = '9788996094050'
 koreaTitle = '윤성우의 열혈 C 프로그래밍'
 title = parse.quote(koreaTitle)
 # case4.  3개 도서관 검색 테스트
+#https://kupis.kw.ac.kr/search/detail/CATTOT000000317224?mainLink=/search/tot&briefLink=/search/tot/result?commandType=advanced_A_lmtsn=000000000001_A_lmtsn=000000000003_A_cpp=10_A_range=000000000021_A__inc=on_A__inc=on_A__inc=on_A__inc=on_A__inc=on_A__inc=on_A_lmt0=TOTAL_A_lmt1=TOTAL_A_rf=_A__lmt0=on_A__lmt0=on_A__lmt0=on_A__lmt0=on_A__lmt0=on_A__lmt0=on_A__lmt0=on_A_si=1_A_si=2_A_si=3_A_weight2=_A_weight0=_A_weight1=_A_inc=TOTAL_A_q=%EC%9C%A4%EC%84%B1%EC%9A%B0%EC%9D%98+%EC%97%B4%ED%98%88+C+%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D_A_q=_A_q=_A_b0=and_A_b1=and_A_lmtst=OR_A_lmtst=OR_A_rt=_A_st=KWRD_A_msc=500
+#https://lib.kookmin.ac.kr/#/search/ex?isbn=1%7Cl%7Ca%7C9788996094050&branch=1&material-type=1
+#http://lib.smu.ac.kr/Search/?q=9788996094050&searchTruncate=true&campuscode=00
+
+
 
 #resultList = [i for i in range(12)]
 ##findLoanStatus(isbn, title, KW_CODE, int(searchFlag), resultList)
