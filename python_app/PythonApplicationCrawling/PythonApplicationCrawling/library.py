@@ -45,7 +45,7 @@ base_start_url_list = ['http://kupis.kw.ac.kr/',
 'http://hsel.hansung.ac.kr/']
 
 base_middle_url_list = ['search/caz/result?st=KWRD&commandType=advanced&si=1&q=',
-'#/total-search?keyword=',
+'#/search/ex?isbn=1%7Cl%7Ca%7C',
 '',
 '',
 '',
@@ -62,7 +62,7 @@ base_middle_url_list = ['search/caz/result?st=KWRD&commandType=advanced&si=1&q='
 
 
 base_end_url_list = ['&b0=and&weight0=&si=2&q=&b1=and&weight1=&si=3&q=&weight2=&inc=TOTAL&_inc=on&_inc=on&_inc=on&_inc=on&_inc=on&_inc=on&lmt0=TOTAL&lmtsn=000000000003&lmtst=OR&rf=&rt=&range=000000000021&cpp=10&msc=100',
-'',
+'&branch=1&material-type=1',
 '',
 '',
 '',
@@ -111,6 +111,5 @@ class LoanStatus:
 
 
 
-stateDict = {'대출중': 0, '이용가능':1,'대출가능':1, '지정도서':2}
-
+stateDict = {'대출중': 0, '예약도서대출중':0,'행낭대출중':0, '이용가능':1,'대출가능':1, '지정도서':2}
 

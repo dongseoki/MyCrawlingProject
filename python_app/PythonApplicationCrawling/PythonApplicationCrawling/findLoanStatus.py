@@ -35,12 +35,16 @@ def makeJsonDict(result):
     jsonDict['errorMessage']=result.errorMessage
     return jsonDict
 
-def findLoanStatus(ISBN, title, sid, searchFlag, resultList):
-    if sid != SM_CODE and sid != KW_CODE:
+def findLoanStatus(ISBN, title, sid, resultList):
+
+    if sid != SM_CODE and sid != KW_CODE and sid !=KM_CODE:
         result = LibraryLS(sid)
         result.errorMessage = 'Not developed...'
     else : 
-        searchUrl = makeSearchUrl(ISBN, title, sid, searchFlag)
+        if sid == KW_CODE :
+            searchUrl = makeSearchUrl(ISBN, title, sid, 2)
+        else :
+            searchUrl = makeSearchUrl(ISBN, title, sid, 1)
         result = crawling(ISBN, title, sid, searchUrl)
     # json string 으로 만들기.
     jsonDict = makeJsonDict(result)
@@ -53,7 +57,10 @@ def findLoanStatusOneResult(ISBN, title, sid, searchFlag):
         result = LibraryLS(sid)
         result.errorMessage = 'Not developed...'
     else : 
-        searchUrl = makeSearchUrl(ISBN, title, sid, searchFlag)
+        if sid == KW_CODE :
+            searchUrl = makeSearchUrl(ISBN, title, sid, 2)
+        else :
+            searchUrl = makeSearchUrl(ISBN, title, sid, 1)
         result = crawling(ISBN, title, sid, searchUrl)
     # json string 으로 만들기.
     jsonDict = makeJsonDict(result)
@@ -64,14 +71,52 @@ def findLoanStatusOneResult(ISBN, title, sid, searchFlag):
 #title = parse.quote(koreaTitle)
 #searchFlag = request.args.get('searchFlag')
 
-isbn = '9788968481093'
-koreaTitle = '(비즈니스를 위한) 데이터 과학'
+#isbn = '9788968481093'
+#koreaTitle = '(비즈니스를 위한) 데이터 과학'
+#title = parse.quote(koreaTitle)
+#searchFlag = '2'
+
+isbn = '9791190313131'
+koreaTitle = '지적 대화를 위한 넓고 얕은 지식'
 title = parse.quote(koreaTitle)
-searchFlag = '2'
+searchFlag = '1'
+
+
+#isbn = '9788988474839'
+#koreaTitle = '데이터 분석 전문가 가이드'
+#sid = 7
+#searchFlag= '2'
+#title = parse.quote(koreaTitle)
+
+#urlresult = makeSearchUrl(ISBN, title, KM_CODE, searchFlag)
+
+
+isbn = '9788996094050'
+koreaTitle = '윤성우의 열혈 C 프로그래밍'
+title = parse.quote(koreaTitle)
+# case4.  3개 도서관 검색 테스트
+
+#resultList = [i for i in range(12)]
+##findLoanStatus(isbn, title, KW_CODE, int(searchFlag), resultList)
+##findLoanStatus(isbn, title, SM_CODE, int(searchFlag), resultList)
+#findLoanStatus(isbn, title, SM_CODE, resultList)
+
+## search Flag 문제. 없앰.
+
+#for item in resultList:
+#    print(item)
+
+#방법 1
+
+
+
+
+
+
 resultList = [i for i in range(12)]
 threads = []
 for i in range(12):
-    t = threading.Thread(target=findLoanStatus, args=(isbn, title, i, int(searchFlag), resultList))
+    t = threading.Thread(target=findLoanStatus, args=(isbn, title, i, resultList))
     threads.append(t)
 
 for t in threads:
@@ -81,3 +126,5 @@ for t in threads:
     t.join()
 jsonString =  json.dumps(resultList)
 print(jsonString)
+
+# 방법 2
