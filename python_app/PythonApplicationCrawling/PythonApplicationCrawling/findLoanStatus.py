@@ -76,10 +76,10 @@ def findLoanStatusOneResult(ISBN, title, sid, searchFlag):
 #title = parse.quote(koreaTitle)
 #searchFlag = '2'
 
-isbn = '9791190313131'
-koreaTitle = '지적 대화를 위한 넓고 얕은 지식'
-title = parse.quote(koreaTitle)
-searchFlag = '1'
+#isbn = '9791190313131'
+#koreaTitle = '지적 대화를 위한 넓고 얕은 지식'
+#title = parse.quote(koreaTitle)
+#searchFlag = '1'
 
 
 #isbn = '9788988474839'

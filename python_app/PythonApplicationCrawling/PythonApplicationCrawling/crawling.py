@@ -368,7 +368,7 @@ def crawling(ISBN, title, sid, searchUrl):
 
         if sid == KM_CODE : 
             libraryLoanStatus.loanStatusList += visitLink(ISBN, sid, title, None,linkElement, browser)
-            browser.quit()
+            
         elif sid == KW_CODE or sid == SM_CODE :  
             for item in bookLinklist:
                 libraryLoanStatus.loanStatusList += visitLink(ISBN, sid, item[0], item[1])
@@ -376,4 +376,6 @@ def crawling(ISBN, title, sid, searchUrl):
         libraryLoanStatus.errorMessage = traceback.format_exc()
         #libraryLoanStatus.errorMessage = 에러 traceback 에러메세지를 담는다.
     finally:
+        if sid == KM_CODE:
+            browser.quit()
         return libraryLoanStatus
