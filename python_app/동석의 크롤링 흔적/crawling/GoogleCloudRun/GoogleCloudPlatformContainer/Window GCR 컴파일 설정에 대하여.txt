@@ -1,0 +1,14 @@
+Window 또는 GCR로 플랫폼이 변경될 때는
+
+3가지를 수정해야 한다.
+
+crawling.py에서
+1. import 부분
+
+2. browser를 설정하는 부분.
+
+위 두가지는 GCR이라는 키워드로 찾으면 빠르게 찾을 수 있다.
+
+findLoanStatus.py에서
+
+3. 제일 밑에 있는 테스트 코드를 주석 또는 추가.
